@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-function day1_part1() {
+function day1_part2() {
     const filePath = path.join(__dirname, 'input.txt');
     const input = fs.readFileSync(filePath, 'utf-8').trim();
 
@@ -11,26 +11,29 @@ function day1_part1() {
 
     let leftList = [];
     let rightList = [];
-    
+
     for (var i = 0; i < lines.length; i++) {
         const numbers = lines[i].trim().split(/\s+/);
         leftList.push(Number(numbers[0]));
         rightList.push(Number(numbers[1]));
     }
 
-    leftList.sort((a, b) => a - b);
-    rightList.sort((a, b) => a - b);
-
-    let totalDistance = 0;
+    let similarityScore = 0;
 
     for (var i = 0; i < leftList.length; i++) {
-        totalDistance += Math.abs(leftList[i] - rightList[i]);
+        let ocurr = 0;
+        for (var j = 0; j < rightList.length; j++) {
+            if (rightList[j] === leftList[i]) {
+                ocurr += 1;
+            }
+        }
+        similarityScore += leftList[i] * ocurr;
     }
 
-    console.log('Total Distance: ' + totalDistance);
+    console.log('Similarity Score: ' + similarityScore);
 
 }
 
 console.time("execution time");
-day1_part1();
+day1_part2();
 console.timeEnd("execution time");

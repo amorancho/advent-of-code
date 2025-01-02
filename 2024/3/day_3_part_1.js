@@ -1,45 +1,41 @@
 "use strict";
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 function day3_part1() {
+  const filePath = path.join(__dirname, "input.txt");
+  const input = fs.readFileSync(filePath, "utf-8").trim();
 
-    const filePath = path.join(__dirname, 'input.txt');
-    const input = fs.readFileSync(filePath, 'utf-8').trim();
+  const subStrOpen = "mul(";
+  const subStrClose = ")";
 
-    const subStrOpen = 'mul(';
-    const subStrClose = ')';
+  let multiplicationResult = 0;
 
-    let multiplicationResult = 0;
+  let index = input.indexOf(subStrOpen);
 
-    let index = input.indexOf(subStrOpen);
+  while (index !== -1) {
+    let posClosePar = input.indexOf(subStrClose, index + 4);
+    let pairOfNumbers = input.substring(index + 4, posClosePar);
 
-    while (index !== -1) {
+    const numbers = pairOfNumbers.split(",");
 
-        let posClosePar = input.indexOf(subStrClose, index + 4);
-        let pairOfNumbers = input.substring(index + 4, posClosePar);
+    let leftNumberStr = numbers[0];
+    let rightNumberStr = numbers[1];
 
-        const numbers = pairOfNumbers.split(',');
-
-        let leftNumberStr = numbers[0];
-        let rightNumberStr = numbers[1];
-
-        if (
-            (leftNumberStr != '') &&
-            (rightNumberStr != '') &&
-            (!isNaN(leftNumberStr)) &&
-            (!isNaN(rightNumberStr))
-        ) {
-
-            multiplicationResult += Number(leftNumberStr) * Number(rightNumberStr);
-
-        }
-
-        index = input.indexOf(subStrOpen, index + 4);
+    if (
+      leftNumberStr != "" &&
+      rightNumberStr != "" &&
+      !isNaN(leftNumberStr) &&
+      !isNaN(rightNumberStr)
+    ) {
+      multiplicationResult += Number(leftNumberStr) * Number(rightNumberStr);
     }
 
-    console.log('Multiplication Result: ' + multiplicationResult);
+    index = input.indexOf(subStrOpen, index + 4);
+  }
+
+  console.log("Multiplication Result: " + multiplicationResult);
 }
 
 console.time("execution time");

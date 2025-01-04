@@ -32,10 +32,10 @@ function getTrailHeads(actualPoint, prevPoint, visitedPoints, endPoints) {
   }
 
   if (map[actualPoint[0]][actualPoint[1]] === 9) {
-    if (!endPoints.has(actualPointStr)) {
-      endPoints.add(actualPointStr);
+    //if (!endPoints.has(actualPointStr)) {
+    //  endPoints.add(actualPointStr);
       return 1;
-    }
+    //}
   }
 
   let result = 0;
@@ -95,10 +95,9 @@ function getTrailHeads(actualPoint, prevPoint, visitedPoints, endPoints) {
   return result;
 }
 
-function day10_part1() {
+function day10_part2() {
   const filePath = path.join(__dirname, "input.txt");
   let input = fs.readFileSync(filePath, "utf-8").trim();
-
 /*
   input = `89010123
 78121874
@@ -108,8 +107,8 @@ function day10_part1() {
 32019012
 01329801
 10456732`;
-
 */
+
   map = input.split("\n").map((line) => line.trim().split("").map(Number));
 
   let startPoints = [];
@@ -132,5 +131,5 @@ function day10_part1() {
 }
 
 console.time("execution time");
-day10_part1();
+day10_part2();
 console.timeEnd("execution time");

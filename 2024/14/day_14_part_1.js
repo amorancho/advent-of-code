@@ -109,6 +109,7 @@ function day14_part1() {
       quadrants[3] += 1;
     }
   }
+
   
 
   let safetyFactor = 1;

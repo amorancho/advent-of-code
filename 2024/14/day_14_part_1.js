@@ -110,8 +110,6 @@ function day14_part1() {
     }
   }
 
-  
-
   let safetyFactor = 1;
 
   for (let i = 0; i < quadrants.length; i++) {

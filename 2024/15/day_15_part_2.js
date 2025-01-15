@@ -52,9 +52,12 @@ function printMap() {
   console.log(result);
 }
 
-function getNewPosition(pos, move) {
+function getNewPosition(pos, move, twoTimes = false) {
   const [x, y] = pos;
   const [dx, dy] = directions[move];
+  if (twoTimes) {
+    return [x + 2 * dx, y + 2 * dy];
+  }
   return [x + dx, y + dy];
 }
 
@@ -102,10 +105,6 @@ function day15_part2() {
     }
   }
 
-  printMap();
-
-  return;
-
   let posRobot;
   let nextPos;
 
@@ -119,6 +118,10 @@ function day15_part2() {
   }
 
   for (let i = 0; i < moves.length; i++) {
+    if (i === 4) {break;}
+    printMap();
+    console.log("move: ", moves[i]);
+    console.log("------------------");
     let move = moves[i];
 
     nextPos = getNewPosition(posRobot, move);
@@ -127,103 +130,117 @@ function day15_part2() {
       continue;
     }
 
-    let auxPos = nextPos;
-
-    if (getObjectMap(nextPos) === BOX) {
-      if (move === "<") {
-        for (let j = nextPos[0] - 1; j >= 0; j--) {
-          nextPos = getNewPosition(nextPos, move);
-          if (getObjectMap(nextPos) === BOX) {
-            continue;
-          } else if (getObjectMap(nextPos) === WALL) {
-            auxPos[0] = auxPos[0] + 1;
-            break;
-          } else {
-            for (let k = auxPos[0] + 1; k > nextPos[0]; k--) {
-              if (k === auxPos[0] + 1) {
-                map[auxPos[1]][k] = EMPTY;
-                map[auxPos[1]][k - 1] = ROBOT;
-              } else {
-                map[auxPos[1]][k - 1] = BOX;
-              }
-            }
-            break;
-          }
-        }
-      }
-
-      if (move === ">") {
-        for (let j = nextPos[0] + 1; j < map.length; j++) {
-          nextPos = getNewPosition(nextPos, move);
-          if (getObjectMap(nextPos) === BOX) {
-            continue;
-          } else if (getObjectMap(nextPos) === WALL) {
-            auxPos[0] = auxPos[0] - 1;
-            break;
-          } else {
-            for (let k = auxPos[0] - 1; k < nextPos[0]; k++) {
-              if (k === auxPos[0] - 1) {
-                map[auxPos[1]][k] = EMPTY;
-                map[auxPos[1]][k + 1] = ROBOT;
-              } else {
-                map[auxPos[1]][k + 1] = BOX;
-              }
-            }
-            break;
-          }
-        }
-      }
-
-      if (move === "^") {
-        for (let j = nextPos[1] - 1; j >= 0; j--) {
-          nextPos = getNewPosition(nextPos, move);
-          if (getObjectMap(nextPos) === BOX) {
-            continue;
-          } else if (getObjectMap(nextPos) === WALL) {
-            auxPos[1] = auxPos[1] + 1;
-            break;
-          } else {
-            for (let k = auxPos[1] + 1; k > nextPos[1]; k--) {
-              if (k === auxPos[1] + 1) {
-                map[k][auxPos[0]] = EMPTY;
-                map[k - 1][auxPos[0]] = ROBOT;
-              } else {
-                map[k - 1][auxPos[0]] = BOX;
-              }
-            }
-            break;
-          }
-        }
-      }
-
-      if (move === "v") {
-        for (let j = nextPos[1] + 1; j < map.length; j++) {
-          nextPos = getNewPosition(nextPos, move);
-          if (getObjectMap(nextPos) === BOX) {
-            continue;
-          } else if (getObjectMap(nextPos) === WALL) {
-            auxPos[1] = auxPos[1] - 1;
-            break;
-          } else {
-            for (let k = auxPos[1] - 1; k < nextPos[1]; k++) {
-              if (k === auxPos[1] - 1) {
-                map[k][auxPos[0]] = EMPTY;
-                map[k + 1][auxPos[0]] = ROBOT;
-              } else {
-                map[k + 1][auxPos[0]] = BOX;
-              }
-            }
-            break;
-          }
-        }
-      }
-    } else {
+    if (getObjectMap(nextPos) === EMPTY) {
       map[nextPos[1]][nextPos[0]] = ROBOT;
       map[posRobot[1]][posRobot[0]] = EMPTY;
+      posRobot = nextPos;
+      continue;
     }
 
-    posRobot = auxPos;
-  }
+    let auxPos = nextPos;
+
+    if (move === "<") {
+      for (let j = nextPos[0] - 1; j >= 0; j--) {
+        nextPos = getNewPosition(nextPos, move, true);
+        if (getObjectMap(nextPos) === BOX_RIGHT) {
+          j--;
+          continue;
+        } else if (getObjectMap(nextPos) === WALL) {
+          auxPos[0] = auxPos[0] + 2;
+          break;
+        } else {
+          for (let k = auxPos[0] + 1; k > nextPos[0]; k--) {
+            if (k === auxPos[0] + 1) {
+              map[auxPos[1]][k] = EMPTY;
+              map[auxPos[1]][k - 1] = ROBOT;
+            } else {
+              map[auxPos[1]][k - 1] = BOX_RIGHT;
+              map[auxPos[1]][k - 2] = BOX_LEFT;
+              k--;
+            }
+          }
+          break;
+        }
+      }
+    }
+
+    if (move === ">") {
+      console.log("Entra en >");
+      for (let j = nextPos[0] + 1; j < map.length; j++) {
+        nextPos = getNewPosition(nextPos, move, true);
+        if (getObjectMap(nextPos) === BOX_LEFT) {
+          j++;
+          continue;
+        } else if (getObjectMap(nextPos) === WALL) {
+          auxPos[0] = auxPos[0] - 2;
+          break;
+        } else {
+          for (let k = auxPos[0] - 1; k < nextPos[0]; k++) {
+            if (k === auxPos[0] - 1) {
+              map[auxPos[1]][k] = EMPTY;
+              map[auxPos[1]][k + 1] = ROBOT;
+            } else {
+              map[auxPos[1]][k + 1] = BOX_LEFT;
+              map[auxPos[1]][k + 2] = BOX_RIGHT;
+              k++;
+            }
+          }
+          break;
+        }
+      }
+    }
+
+    if (move === "^") {
+      for (let j = nextPos[1] - 1; j >= 0; j--) {
+        nextPos = getNewPosition(nextPos, move);
+        if (getObjectMap(nextPos) === BOX) {
+          j--;
+          continue;
+        } else if (getObjectMap(nextPos) === WALL) {
+          auxPos[1] = auxPos[1] + 2;
+          break;
+        } else {
+          for (let k = auxPos[1] + 1; k > nextPos[1]; k--) {
+            if (k === auxPos[1] + 1) {
+              map[k][auxPos[0]] = EMPTY;
+              map[k - 1][auxPos[0]] = ROBOT;
+            } else {
+              map[k - 1][auxPos[0]] = BOX_LEFT;
+              map[k - 1][auxPos[0]] = BOX;
+            }
+          }
+          break;
+        }
+      }
+    }
+
+    if (move === "v") {
+      for (let j = nextPos[1] + 1; j < map.length; j++) {
+        nextPos = getNewPosition(nextPos, move);
+        if (getObjectMap(nextPos) === BOX) {
+          continue;
+        } else if (getObjectMap(nextPos) === WALL) {
+          auxPos[1] = auxPos[1] - 1;
+          break;
+        } else {
+          for (let k = auxPos[1] - 1; k < nextPos[1]; k++) {
+            if (k === auxPos[1] - 1) {
+              map[k][auxPos[0]] = EMPTY;
+              map[k + 1][auxPos[0]] = ROBOT;
+            } else {
+              map[k + 1][auxPos[0]] = BOX;
+            }
+          }
+          break;
+        }
+      }
+    }
+
+    posRobot = auxPos;    
+    
+  }    
+
+  printMap();
 
   let sumGPSCoordinates = 0;
 
